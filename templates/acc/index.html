@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block con %}
+    <div class="row text-center">
+        <div class="col-sm-4">
+            <img src="{{user.getpic}}" width="100%">
+        </div>
+        <div class="col-sm-8">
+            <h1><b>{{user.first_name}} {{user.last_name}}~~ Welcome!! </b></h1>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block noauth %}
+    <h1>Login First!</h1>
+{% endblock %}

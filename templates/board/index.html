@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+
+{% block con %}
+    {% load mathfilters %}
+    <h1><b>게시판</b></h1>
+    <div class="text-end">
+        <a href="{% url 'board:create' %}" class="btn btn-dark"><b>create</b></a>
+    </div>
+    <table class="table mt-2 table-hover">
+        <thead>
+            <tr class="table-dark">
+                <th scope="col">NO</th>
+                <th scope="col">SUBJECT</th>
+                <th scope="col">SUMMARY</th>
+                <th scope="col">WRITER</th>
+                <th scope="col">LIKEY</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% if bset %}
+                {% for i in bset %}
+                    <tr>
+                        <th scope="row">{{bset.start_index|add:forloop.counter0}}</th>
+                        <td><a class="sub" href="{% url 'board:detail' i.id %}">{{i.subject}}</a></td>
+                        <td>{{i.summary}}</td>
+                        <td>{{i.writer}}</td>
+                        <td>{{i.likey.count}}</td>
+                    </tr>
+               {% endfor %}
+            {% else %}
+                {% if kw %}
+                    <tr>
+                        <td colspan="5">No Serch</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">No Data</td>
+                    </tr>
+                {% endif %}
+            {% endif %}
+        </tbody>
+    </table>
+
+
+
+    <form>
+        <div class="row mt-4 mb-2">
+            <div class="col-sm-2">
+                <select class="form-select form-select-sm" name="cate">
+                    <option value="sub" {% if cate == "sub" %}selected{% endif %}>subject</option>
+                    <option value="wri" {% if cate == "wri" %}selected{% endif %}>writer</option>
+                    <option value="con" {% if cate == "con" %}selected{% endif %}>content</option>
+                </select>
+            </div>
+            <div class="col-sm-9">
+                <input type="text" name="kw" value="{{kw}}" class="form-control form-control-sm">
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-dark btn-sm" style="width:100%">serch</button>
+            </div>
+        </div>
+    </form>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+
+            {% if bset.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'board:index' %}?page=1&cate={{cate}}&kw={{kw}}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'board:index' %}?page={{bset.previous_page_number}}&cate={{cate}}&kw={{kw}}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link">First</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for i in bset.paginator.page_range %}
+                {% if bset.number|add:2 >= i and i >= bset.number|sub:2 %}
+                    <li class="page-item {% if bset.number == i%} active {% endif %}"><a class="page-link" href="{% url 'board:index' %}?page={{i}}&cate={{cate}}&kw={{kw}}">{{i}}</a></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if bset.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'board:index' %}?page={{bset.next_page_number}}&cate={{cate}}&kw={{kw}}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'board:index' %}?page={{bset.paginator.num_pages}}&cate={{cate}}&kw={{kw}}">Last</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link">Next</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+      </nav>
+
+    <style>
+        .sub{
+            text-decoration: none;
+            color:black
+        }
+        .sub:hover{
+            color : gray;
+        }
+    </style>
+{% endblock %}

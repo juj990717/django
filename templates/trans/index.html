@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block con %}
+{% endblock %}
+
+
+
+{% block noauth %}
+{% endblock %}
+
+
+
+{% block any %}
+
+    <h1><b>Trans</b></h1>
+    
+    <form method="post" name="transForm">
+        {% csrf_token %}
+        <div class="row mt-4 text-center">
+
+            <div class="col-sm-5">
+                <textarea class ="form-control" name="translate" placeholder="Please input text" rows="10" cols="40">{{text}}</textarea>
+            </div>
+
+            <div class="col-sm-2 mt-5">
+                <select name="er" class="form-select" style="margin:auto;">
+                    {% for code, name in ndict.items %}
+                        <option class="text-center" value="{{code}}" {% if er %} {% if er == code %}selected{% endif %}{% else %}{% if code == "ko" %}selected{% endif %}{% endif %}>{{name|upper}}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="button" onclick="check()" class="btn btn-dark mt-2 mb-2">번역</button>
+
+                <select name="ed" class="form-select">
+                    {% for code, name in ndict.items %}
+                        <option class="text-center" value="{{code}}" {% if ed %} {% if ed == code %}selected{% endif %}{% else %}{% if code == "en" %}selected{% endif %}{% endif %}>{{name|upper}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-sm-5">
+                <textarea class ="form-control mb-2" rows="10" cols="40" disabled>{{t}}</textarea>
+                {% if t %}<audio src="\media\tts\trans.mp3" autoplay controls>오디오 지원되지 않는 브라우저</audio>{% endif %} 
+            </div>
+            
+        
+       
+    
+        </div>
+    </form>
+
+    
+
+    <script>
+        function check(){
+            t = document.transForm
+            if(!t.translate.value){
+                alert("input translate text")
+            }else if(t.er.value == t.ed.value){
+                alert("please select different language")
+            }else{
+                t.submit()
+            }
+        }
+    </script>
+
+{% endblock %}
+
+
+        
+
